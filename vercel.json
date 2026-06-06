@@ -17,8 +17,7 @@
   "crons": [
     {
       "path": "/api/cron/ping",
-      "schedule": "0 3 * * *",
-      "timezone": "Asia/Jakarta"
+      "schedule": "0 20 * * *"
     }
   ]
 }
