@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "../components/ui/Input";
 import { jsPDF } from "jspdf";
+import { AnimatePresence, motion } from "motion/react";
+import { Download, ExternalLink, X, FileText, Smartphone } from "lucide-react";
 
 export function CekMandiriPage() {
   return (
@@ -33,6 +35,40 @@ function CekMandiri() {
   const [usia, setUsia] = useState<number>(0);
   const [hariKemo, setHariKemo] = useState<number>(0);
   const [ecog, setEcog] = useState<number>(0);
+
+  const [logoBase64, setLogoBase64] = useState<string>("");
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [pdfUrl, setPdfUrl] = useState<string>("");
+  const [pdfFileName, setPdfFileName] = useState<string>("");
+
+  useEffect(() => {
+    const fetchLogo = async () => {
+      try {
+        const response = await fetch("/logo-transparent.png");
+        if (response.ok) {
+          const blob = await response.blob();
+          const encoded = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+          });
+          setLogoBase64(encoded);
+        }
+      } catch (err) {
+        console.warn("Failed to convert logo to base64", err);
+      }
+    };
+    fetchLogo();
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (pdfUrl) {
+        URL.revokeObjectURL(pdfUrl);
+      }
+    };
+  }, [pdfUrl]);
 
   const calculateScore = () => {
     // Check direct red flags
@@ -118,25 +154,8 @@ function CekMandiri() {
 
   const result = calculateScore();
 
-  const downloadPDF = async () => {
+  const downloadPDF = () => {
     const doc = new jsPDF();
-    
-    // Attempt to load transparent logo
-    let logoBase64 = "";
-    try {
-      const response = await fetch("/logo-transparent.png");
-      if (response.ok) {
-        const blob = await response.blob();
-        logoBase64 = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onloadend = () => resolve(reader.result as string);
-          reader.onerror = reject;
-          reader.readAsDataURL(blob);
-        });
-      }
-    } catch (e) {
-      console.warn("Failed to convert logo to base64", e);
-    }
 
     doc.setProperties({
       title: `Hasil Cek Mandiri - ${nama || "Pasien"}`,
@@ -427,7 +446,18 @@ function CekMandiri() {
     doc.text("3. Apabila pasien merasakan keluhan medis yang berkepanjangan, memburuk, atau darurat, harap segera kunjungi IGD rumah sakit terdekat.", marginX, currentY);
 
     const slug = (nama.trim() || "Pasien").replace(/\s+/g, "_");
-    doc.save(`Skrining_CekMandiri_${slug}.pdf`);
+    const fileName = `Skrining_CekMandiri_${slug}.pdf`;
+
+    const blob = doc.output("blob");
+    const url = URL.createObjectURL(blob);
+
+    if (pdfUrl) {
+      URL.revokeObjectURL(pdfUrl);
+    }
+
+    setPdfUrl(url);
+    setPdfFileName(fileName);
+    setIsModalOpen(true);
   };
 
   return (    <div className="max-w-7xl mx-auto px-[0.5rem] sm:px-[1rem] md:px-[2rem] lg:px-[3rem]">
@@ -754,6 +784,132 @@ function CekMandiri() {
 
         </form>
       </div>
+
+      <AnimatePresence>
+        {isModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsModalOpen(false)}
+              className="absolute inset-0 bg-[#0f0a19]/60 backdrop-blur-sm"
+              id="pdf-backdrop"
+            />
+
+            {/* Modal Content */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ type: "spring", duration: 0.4 }}
+              className="relative w-full max-w-lg bg-white rounded-2xl shadow-xl border border-primary-100 overflow-hidden z-10 mx-auto"
+              id="pdf-modal-container"
+            >
+              {/* Header */}
+              <div className="bg-gradient-to-r from-primary-950 to-primary-800 px-6 py-5 text-white flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/10 rounded-lg">
+                    <FileText className="w-6 h-6 text-primary-200" id="pdf-icon-header" />
+                  </div>
+                  <div className="text-left">
+                    <h3 className="font-display font-semibold text-lg leading-snug text-white">Laporan Hasil Siap!</h3>
+                    <p className="text-xs text-primary-200">Pilih opsi penyimpanan yang sesuai</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="p-1.5 hover:bg-white/10 rounded-full transition-colors cursor-pointer text-white"
+                  title="Tutup"
+                  id="pdf-btn-close-header"
+                >
+                  <X className="w-5 h-5 flex items-center justify-center" />
+                </button>
+              </div>
+
+              {/* Body */}
+              <div className="p-6 space-y-4">
+                <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 flex items-start gap-3">
+                  <Smartphone className="w-5 h-5 text-primary-700 shrink-0 mt-0.5" id="pdf-device-icon" />
+                  <p className="text-xs text-primary-900 leading-relaxed font-sans text-left">
+                    <strong>Penting untuk pengguna HP (iPhone/Android/Tablet):</strong> Gunakan tombol <strong>Buka di Tab Baru</strong> jika unduhan langsung terhambat. Anda dapat melihat laporannya secara utuh dan membagikannya secara langsung.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {/* Option 1: Open in New Tab (Recommended for Mobile) */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (pdfUrl) {
+                        window.open(pdfUrl, "_blank");
+                      }
+                    }}
+                    className="w-full text-left p-4 rounded-xl border-2 border-primary-600 hover:bg-primary-50 transition-colors flex items-start gap-4 cursor-pointer group"
+                    id="pdf-option-tab"
+                  >
+                    <div className="p-2.5 bg-primary-100 text-primary-700 rounded-lg group-hover:bg-primary-200 transition-colors shrink-0">
+                      <ExternalLink className="w-6 h-6" />
+                    </div>
+                    <div className="w-full text-left">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-semibold text-gray-900 text-sm">Buka di Tab Baru</span>
+                        <span className="bg-primary-100 text-primary-800 text-[10px] px-2 py-0.5 rounded-full font-medium border border-primary-200">
+                          Rekomendasi HP & Tablet
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-650 mt-1 leading-relaxed">
+                        Membuka file PDF langsung di browser. Anda bisa langsung membagikan hasil skrining ke WhatsApp/Email, mencetak, atau menyimpannya di file perangkat dengan mudah.
+                      </p>
+                    </div>
+                  </button>
+
+                  {/* Option 2: Direct Download */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (pdfUrl && pdfFileName) {
+                        const link = document.createElement("a");
+                        link.href = pdfUrl;
+                        link.download = pdfFileName;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }
+                    }}
+                    className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-primary-500 hover:bg-gray-50 transition-colors flex items-start gap-4 cursor-pointer group"
+                    id="pdf-option-download"
+                  >
+                    <div className="p-2.5 bg-gray-100 text-gray-600 rounded-lg group-hover:bg-primary-50 group-hover:text-primary-700 transition-colors shrink-0">
+                      <Download className="w-6 h-6" />
+                    </div>
+                    <div className="w-full text-left">
+                      <span className="font-semibold text-gray-900 text-sm">Unduh / Simpan Langsung</span>
+                      <p className="text-xs text-gray-650 mt-1 leading-relaxed">
+                        Mengunduh file PDF secara otomatis ke folder unduhan perangkat Anda. Sangat ideal untuk pengguna komputer / laptop desktop.
+                      </p>
+                    </div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors cursor-pointer"
+                  id="pdf-btn-cancel"
+                >
+                  Tutup
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
