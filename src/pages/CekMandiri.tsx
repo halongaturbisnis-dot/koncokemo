@@ -155,22 +155,23 @@ function CekMandiri() {
   const result = calculateScore();
 
   const downloadPDF = () => {
-    const doc = new jsPDF();
+    try {
+      const doc = new jsPDF();
 
-    doc.setProperties({
-      title: `Hasil Cek Mandiri - ${nama || "Pasien"}`,
-      subject: "KoncoKemo - Pusat Informasi Pasien Kemoterapi",
-      author: "KoncoKemo App",
-      creator: "KoncoKemo PDF Creator"
-    });
+      doc.setProperties({
+        title: `Hasil Cek Mandiri - ${nama || "Pasien"}`,
+        subject: "KoncoKemo - Pusat Informasi Pasien Kemoterapi",
+        author: "KoncoKemo App",
+        creator: "KoncoKemo PDF Creator"
+      });
 
-    const marginX = 20;
-    let currentY = 15;
+      const marginX = 20;
+      let currentY = 15;
 
-    // --- REPORT HEADER ---
-    if (logoBase64) {
-      doc.addImage(logoBase64, "PNG", marginX, currentY, 14, 14, undefined, "FAST");
-    }
+      // --- REPORT HEADER ---
+      if (logoBase64 && logoBase64.startsWith("data:image/png")) {
+        doc.addImage(logoBase64, "PNG", marginX, currentY, 14, 14, undefined, "FAST");
+      }
 
     doc.setTextColor(92, 53, 143);
     doc.setFont("Helvetica", "bold");
@@ -448,6 +449,7 @@ function CekMandiri() {
     const slug = (nama.trim() || "Pasien").replace(/\s+/g, "_");
     const fileName = `Skrining_CekMandiri_${slug}.pdf`;
 
+    // Use Blob for mobile compatibility (iOS Safari can open this inside the same frame/new tab)
     const blob = doc.output("blob");
     const url = URL.createObjectURL(blob);
 
@@ -458,6 +460,10 @@ function CekMandiri() {
     setPdfUrl(url);
     setPdfFileName(fileName);
     setIsModalOpen(true);
+    } catch (err) {
+      console.error("Gagal membuat PDF:", err);
+      alert("Maaf, terjadi kesalahan saat membuat PDF. Mohon coba lagi.");
+    }
   };
 
   return (    <div className="max-w-7xl mx-auto px-[0.5rem] sm:px-[1rem] md:px-[2rem] lg:px-[3rem]">
@@ -840,13 +846,10 @@ function CekMandiri() {
 
                 <div className="space-y-3">
                   {/* Option 1: Open in New Tab (Recommended for Mobile) */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (pdfUrl) {
-                        window.open(pdfUrl, "_blank");
-                      }
-                    }}
+                  <a
+                    href={pdfUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-full text-left p-4 rounded-xl border-2 border-primary-600 hover:bg-primary-50 transition-colors flex items-start gap-4 cursor-pointer group"
                     id="pdf-option-tab"
                   >
@@ -864,21 +867,12 @@ function CekMandiri() {
                         Membuka file PDF langsung di browser. Anda bisa langsung membagikan hasil skrining ke WhatsApp/Email, mencetak, atau menyimpannya di file perangkat dengan mudah.
                       </p>
                     </div>
-                  </button>
+                  </a>
 
                   {/* Option 2: Direct Download */}
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (pdfUrl && pdfFileName) {
-                        const link = document.createElement("a");
-                        link.href = pdfUrl;
-                        link.download = pdfFileName;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                      }
-                    }}
+                  <a
+                    href={pdfUrl}
+                    download={pdfFileName}
                     className="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-primary-500 hover:bg-gray-50 transition-colors flex items-start gap-4 cursor-pointer group"
                     id="pdf-option-download"
                   >
@@ -891,7 +885,7 @@ function CekMandiri() {
                         Mengunduh file PDF secara otomatis ke folder unduhan perangkat Anda. Sangat ideal untuk pengguna komputer / laptop desktop.
                       </p>
                     </div>
-                  </button>
+                  </a>
                 </div>
               </div>
 
