@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "motion/react";
 import { siteConfig } from "../../config/site";
 import { X } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 
 interface SidebarProps {
@@ -10,6 +10,8 @@ interface SidebarProps {
 }
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const location = useLocation();
+
   // Lock body scroll when mobile sidebar is open
   useEffect(() => {
     if (isOpen) {
@@ -75,7 +77,14 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
                 <NavLink
                   key={link.name}
                   to={link.href}
-                  onClick={onClose}
+                  onClick={(e) => {
+                    if (link.href === "/") {
+                      if (location.pathname === "/") {
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }
+                    }
+                    onClose();
+                  }}
                   className={({ isActive }) =>
                     `text-base font-bold font-sans transition-colors p-3 rounded-xl hover:bg-primary-50 hover:text-primary-600 block ${
                       isActive

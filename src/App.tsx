@@ -1,5 +1,5 @@
 import { Suspense, lazy, useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { MainLayout } from "./components/layout/MainLayout";
 import { PublicLayout } from "./pages/PublicLayout";
 import { CekMandiriPage } from "./pages/CekMandiri";
@@ -7,6 +7,21 @@ import { Loader2 } from "lucide-react";
 import { GreetingWidget } from "./components/GreetingWidget";
 import { SplashScreen } from "./components/ui/SplashScreen";
 import { AnimatePresence } from "motion/react";
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
+
+  useEffect(() => {
+    // Memastikan pada awal loading akan scroll ke paling atas
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
+
+  return null;
+}
 
 // Lazy loading modul Admin dan halaman lain yang tidak langsung diakses di awal
 import { AdminLogin } from "./pages/admin/Login";
@@ -51,6 +66,7 @@ export default function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <AnimatePresence>
         {showSplash && <SplashScreen />}
       </AnimatePresence>

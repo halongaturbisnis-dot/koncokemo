@@ -1,12 +1,19 @@
 import { motion } from "motion/react";
 import { siteConfig } from "../../config/site";
 import { Menu } from "lucide-react";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { Sidebar } from "./Sidebar";
 
 export function Header() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  const handleHomeClick = () => {
+    if (location.pathname === "/") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <>
@@ -17,7 +24,7 @@ export function Header() {
         className="fixed top-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100"
       >
         <div className="container mx-auto px-6 lg:px-12 h-20 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" onClick={handleHomeClick} className="flex items-center gap-3">
             <img src="https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44" alt="KoncoKemo Logo" className="w-10 h-10 object-contain" />
             <span className="font-display font-bold text-2xl tracking-tight text-primary-900">
               {siteConfig.name}
@@ -29,6 +36,11 @@ export function Header() {
               <NavLink 
                 key={link.name} 
                 to={link.href}
+                onClick={(e) => {
+                  if (link.href === "/") {
+                    handleHomeClick();
+                  }
+                }}
                 className={({ isActive }) => 
                   `text-sm font-bold transition-colors ${
                     isActive ? "text-primary-600" : "text-gray-600 hover:text-primary-600"
