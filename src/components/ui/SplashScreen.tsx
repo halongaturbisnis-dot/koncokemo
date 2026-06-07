@@ -11,7 +11,7 @@ export function SplashScreen() {
   }, []);
 
   // Logo URL
-  const logoUrl = "/logo-transparent.png"; 
+  const logoUrl = "https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44"; 
 
   return (
     <motion.div

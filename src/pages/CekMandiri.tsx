@@ -44,7 +44,7 @@ function CekMandiri() {
   useEffect(() => {
     const fetchLogo = async () => {
       try {
-        const response = await fetch("/logo-transparent.png");
+        const response = await fetch("https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44");
         if (response.ok) {
           const blob = await response.blob();
           const encoded = await new Promise<string>((resolve, reject) => {
