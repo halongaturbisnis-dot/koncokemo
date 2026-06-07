@@ -41,16 +41,25 @@ export const GreetingWidget = () => {
               animate={{ opacity: 1, scale: 1 }}
               className="relative bg-white p-3 md:p-5 rounded-3xl shadow-xl max-w-44 md:max-w-72 z-10"
             >
-              <button 
+              <motion.button 
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsOpen(false);
                 }}
-                className="absolute top-1.5 right-1.5 p-1 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-100 transition-colors cursor-pointer z-30"
+                animate={{ 
+                  backgroundColor: ["rgba(243, 244, 246, 1)", "rgba(254, 226, 226, 1)", "rgba(243, 244, 246, 1)"],
+                  color: ["rgba(156, 163, 175, 1)", "rgba(220, 38, 38, 1)", "rgba(156, 163, 175, 1)"]
+                }}
+                transition={{ 
+                  repeat: Infinity, 
+                  duration: 2,
+                  ease: "easeInOut"
+                }}
+                className="absolute top-1.5 right-1.5 p-1 rounded-full transition-colors cursor-pointer z-30"
                 title="Tutup"
               >
                 <X size={12} className="w-3 h-3 md:w-3.5 md:h-3.5" />
-              </button>
+              </motion.button>
               <p className="text-xs md:text-sm text-gray-700 leading-relaxed font-medium mt-0.5 md:mt-2">
                 "Tidaklah Allah menurunkan suatu penyakit, melainkan Dia juga menurunkan obatnya.”
               </p>

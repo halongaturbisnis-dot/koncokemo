@@ -1,10 +1,12 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import { MainLayout } from "./components/layout/MainLayout";
 import { PublicLayout } from "./pages/PublicLayout";
 import { CekMandiriPage } from "./pages/CekMandiri";
 import { Loader2 } from "lucide-react";
 import { GreetingWidget } from "./components/GreetingWidget";
+import { SplashScreen } from "./components/ui/SplashScreen";
+import { AnimatePresence } from "motion/react";
 
 // Lazy loading modul Admin dan halaman lain yang tidak langsung diakses di awal
 import { AdminLogin } from "./pages/admin/Login";
@@ -38,8 +40,20 @@ const SuspenseFallback = () => (
 );
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowSplash(false);
+    }, 6000); // Tampil selama 6 detik (di antara rentang 5-7 detik)
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <Router>
+      <AnimatePresence>
+        {showSplash && <SplashScreen />}
+      </AnimatePresence>
       <GreetingWidget />
       <Suspense fallback={<SuspenseFallback />}>
         <Routes>
