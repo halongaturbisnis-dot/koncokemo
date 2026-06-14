@@ -1,4 +1,4 @@
-const CACHE_NAME = "koncokemo-v1";
+const CACHE_NAME = "koncokemo-v2";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
@@ -32,11 +32,39 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("fetch", (event) => {
-  // Only handle GET requests and local scope
-  if (event.request.method !== "GET" || !event.request.url.startsWith(self.location.origin)) {
+  // Only handle GET requests
+  if (event.request.method !== "GET") {
     return;
   }
 
+  // Do not cache API endpoints or external data (like Supabase or external images)
+  if (!event.request.url.startsWith(self.location.origin)) {
+    return;
+  }
+
+  // Network-First strategy for navigations (HTML pages)
+  if (event.request.mode === "navigate" || (event.request.headers.get("accept") && event.request.headers.get("accept").includes("text/html"))) {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const responseToCache = response.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseToCache);
+          });
+          return response;
+        })
+        .catch(() => {
+          return caches.match(event.request).then((cachedResponse) => {
+            if (cachedResponse) {
+              return cachedResponse;
+            }
+          });
+        })
+    );
+    return;
+  }
+
+  // Cache-First strategy for other static assets (JS, CSS, Images)
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {
