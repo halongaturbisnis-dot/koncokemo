@@ -1,10 +1,7 @@
 {
   "version": 2,
   "routes": [
-    {
-      "src": "/(assets|manifest.json|sw.js|favicon.ico).*",
-      "dest": "/$1$2"
-    },
+    { "handle": "filesystem" },
     {
       "src": "/api/(.*)",
       "dest": "/api/index.ts"
