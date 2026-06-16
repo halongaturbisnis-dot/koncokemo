@@ -4,6 +4,7 @@ import { motion } from "motion/react";
 import { ArrowRight, Loader2, BookOpen } from "lucide-react";
 import { getEdukasis, Edukasi } from "../lib/edukasi";
 import { getYoutubeThumbnail, isYoutubeUrl } from "../lib/videoUtils";
+import { SEO } from "../components/SEO";
 
 export function EdukasiList() {
   const [edukasis, setEdukasis] = useState<Edukasi[]>([]);
@@ -25,6 +26,11 @@ export function EdukasiList() {
 
   return (
     <main className="flex-1 w-full max-w-[80rem] mx-auto px-[0.75rem] sm:px-[1.5rem] lg:px-[3rem] pt-[1rem] pb-[2.5rem] md:pt-[2rem] md:pb-[5rem] lg:pt-[2.5rem] lg:pb-[6rem]">
+      <SEO 
+        title="Edukasi Pasien" 
+        description="Dapatkan informasi akurat terpercaya seputar kemoterapi, efek samping, dan tips perawatan dari tenaga medis profesional."
+        url="https://koncokemo.com/edukasi"
+      />
       <div className="max-w-[48rem] mb-[1.25rem] md:mb-[2rem]">
         <motion.h1 
           initial={{ opacity: 0, y: 10 }}

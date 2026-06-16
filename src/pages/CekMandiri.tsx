@@ -3,10 +3,16 @@ import { Input } from "../components/ui/Input";
 import { jsPDF } from "jspdf";
 import { AnimatePresence, motion } from "motion/react";
 import { Download, ExternalLink, X, FileText, Smartphone } from "lucide-react";
+import { SEO } from "../components/SEO";
 
 export function CekMandiriPage() {
   return (
     <div className="pt-[0.75rem] md:pt-[1.5rem] pb-[3rem] md:pb-[5rem]">
+      <SEO 
+        title="Cek Risiko Mandiri Kemoterapi" 
+        description="Layanan evaluasi dan cek risiko mandiri pasca kemoterapi untuk menilai kondisi dan menentukan langkah medis selanjutnya."
+        url="https://koncokemo.com/cek-mandiri"
+      />
       <CekMandiri />
     </div>
   );

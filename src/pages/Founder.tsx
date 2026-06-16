@@ -1,12 +1,30 @@
 import { motion } from "motion/react";
 import Typewriter from "typewriter-effect";
 import { GraduationCap, Microscope, Stethoscope, MapPin, Quote } from "lucide-react";
+import { SEO } from "../components/SEO";
 
 const FounderPage = () => {
   const photoUrl = "https://lh3.googleusercontent.com/d/1LUh5PRm082eRYlCJhXTiPC6O4Q-vvR7X";
 
   return (
     <div className="min-h-screen bg-white selection:bg-primary-100">
+      <SEO 
+        title="Tentang Founder - Dr. dr. Shinta Oktya Wardhani" 
+        description="Pakar Hematologi Onkologi Medik dan founder KoncoKemo, memastikan setiap pasien mendapatkan keadilan informasi dan dukungan perawatan selagi kemoterapi."
+        url="https://koncokemo.com/founder"
+        image={photoUrl}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Dr. dr. Shinta Oktya Wardhani, Sp.PD, K-HOM, FINASIM",
+          "jobTitle": "Pakar Hematologi dan Onkologi Medik",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "KoncoKemo"
+          },
+          "image": photoUrl
+        }}
+      />
       {/* Dynamic Header / Hero */}
       <section className="relative pt-[1.5rem] pb-0 lg:pt-[4rem] lg:pb-0 overflow-hidden">
         {/* Subtle Branding Accent */}

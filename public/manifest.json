@@ -1,7 +1,7 @@
 {
   "name": "KoncoKemo",
   "short_name": "KoncoKemo",
-  "description": "Pusat informasi pasien kemoterapi",
+  "description": "Pusat Pemberdayaan, Edukasi dan Komunitas Pasien Kanker",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

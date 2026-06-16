@@ -1,6 +1,6 @@
 {
-  "name": "Remix: Project: Konco Kemo by Dr Shinta",
-  "description": "A robust, modern website boilerplate built with React, Vite, Framer Motion, and Fontshare typography. Architected to easily transition into a dynamic CMS-driven site.",
+  "name": "KoncoKemo",
+  "description": "Pusat Pemberdayaan, Edukasi dan Komunitas Pasien Kanker",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"

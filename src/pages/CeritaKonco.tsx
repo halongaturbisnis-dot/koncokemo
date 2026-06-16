@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { getCeritaKoncos, CeritaKonco } from "../lib/ceritaKonco";
+import { SEO } from "../components/SEO";
 
 export function CeritaKoncoList() {
   const [ceritas, setCeritas] = useState<CeritaKonco[]>([]);
@@ -24,6 +25,11 @@ export function CeritaKoncoList() {
 
   return (
     <main className="flex-1 w-full max-w-[80rem] mx-auto px-[0.75rem] sm:px-[1.5rem] lg:px-[3rem] pt-[1rem] pb-[2.5rem] md:pt-[2rem] md:pb-[5rem] lg:pt-[2.5rem] lg:pb-[6rem]">
+      <SEO 
+        title="Cerita Konco" 
+        description="Kumpulan kisah inspiratif, perjalanan pengobatan, dan harapan dari para penyintas kemoterapi yang akan menguatkan langkah Anda."
+        url="https://koncokemo.com/cerita-konco"
+      />
       <div className="max-w-[48rem] mb-[1.25rem] md:mb-[2rem]">
         <motion.h1 
           initial={{ opacity: 0, y: 10 }}

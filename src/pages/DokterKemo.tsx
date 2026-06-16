@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { Search, MapPin, Phone, User, X, Info, Loader2, Hospital, Plus } from "lucide-react";
 import { getDokters, Dokter } from "../lib/dokter";
 import { Button } from "../components/ui/Button";
+import { SEO } from "../components/SEO";
 
 export function DokterKemo() {
   const [dokters, setDokters] = useState<Dokter[]>([]);
@@ -32,6 +33,11 @@ export function DokterKemo() {
 
   return (
     <main className="flex-1 w-full max-w-[80rem] mx-auto px-[0.75rem] sm:px-[1.5rem] lg:px-[3rem] pt-[1rem] pb-[2.5rem] md:pt-[2rem] md:pb-[5rem] lg:pt-[2.5rem] lg:pb-[6rem]">
+      <SEO 
+        title="Daftar Dokter Kemo dan Onkologi" 
+        description="Temukan profil, lokasi parktik, dan informasi kontak dari dokter spesialis onkologi dan hematologi terpercaya."
+        url="https://koncokemo.com/dokter-kemo"
+      />
       {/* Header Section */}
       <div className="max-w-[48rem] mb-[1.5rem] md:mb-[3.5rem]">
         <motion.h1 

@@ -1,6 +1,6 @@
 export const siteConfig = {
   name: "KoncoKemo",
-  description: "Platform Modern dan Edukatif untuk Mendampingi Pasien Kemoterapi.",
+  description: "Pusat Pemberdayaan, Edukasi dan Komunitas Pasien Kanker",
   navLinks: [
     { name: "Beranda", href: "/" },
     { name: "Cek Mandiri", href: "/cek-mandiri" },
@@ -63,6 +63,6 @@ export const siteConfig = {
     }
   ],
   footer: {
-    description: "KoncoKemo adalah platform dukungan modern dan edukatif bagi pasien yang sedang menjalani perawatan kemoterapi."
+    description: "KoncoKemo adalah Pusat Pemberdayaan, Edukasi dan Komunitas Pasien Kanker."
   }
 };

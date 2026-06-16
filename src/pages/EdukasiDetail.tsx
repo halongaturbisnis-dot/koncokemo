@@ -3,12 +3,11 @@ import { useParams, Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { ArrowLeft, Calendar, Loader2, PlayCircle, Share2, Printer } from "lucide-react";
 import { getEdukasiById, Edukasi } from "../lib/edukasi";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
 import { getYoutubeEmbedUrl, isYoutubeUrl } from "../lib/videoUtils";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import { SEO } from "../components/SEO";
 
 export function EdukasiDetail() {
   const { id } = useParams<{ id: string }>();
@@ -57,6 +56,34 @@ export function EdukasiDetail() {
 
   return (
     <div className="w-full bg-white">
+      <SEO 
+        title={`${edukasi.title} - Edukasi KoncoKemo`}
+        description={edukasi.subtitle || "Materi edukasi kemoterapi dari KoncoKemo."}
+        image={!isVideo ? edukasi.media_url : "https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44"}
+        type="article"
+        url={`https://koncokemo.com/edukasi/${id}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": edukasi.title,
+          "description": edukasi.subtitle,
+          "image": !isVideo ? edukasi.media_url : "https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44",
+          "author": {
+            "@type": "Organization",
+            "name": "KoncoKemo"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "KoncoKemo",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44"
+            }
+          },
+          "datePublished": edukasi.created_at,
+          "dateModified": edukasi.created_at
+        }}
+      />
       <div className="max-w-[85rem] mx-auto px-[0.75rem] sm:px-[1.5rem] lg:px-[4rem] pt-[1rem] pb-[3rem] md:pt-[3rem] md:pb-[5rem] lg:pt-[4rem] lg:pb-[7rem]">
         {/* Header Section */}
         <motion.div 

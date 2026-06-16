@@ -6,8 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { getCeritaKoncoById, CeritaKonco } from "../lib/ceritaKonco";
-import { Header } from "../components/layout/Header";
-import { Footer } from "../components/layout/Footer";
+import { SEO } from "../components/SEO";
 
 export function CeritaKoncoDetail() {
   const { id } = useParams<{ id: string }>();
@@ -51,6 +50,34 @@ export function CeritaKoncoDetail() {
 
   return (
     <div className="w-full bg-white">
+      <SEO 
+        title={`${cerita.title} - Cerita Konco`}
+        description={cerita.subtitle_hook || "Kisah inspiratif penyintas kemoterapi."}
+        image={cerita.thumbnail_image || "https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44"}
+        type="article"
+        url={`https://koncokemo.com/cerita-konco/${id}`}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          "headline": cerita.title,
+          "description": cerita.subtitle_hook,
+          "image": cerita.thumbnail_image,
+          "author": {
+            "@type": "Person",
+            "name": cerita.patient_name || "KoncoKemo User"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "KoncoKemo",
+            "logo": {
+              "@type": "ImageObject",
+              "url": "https://lh3.googleusercontent.com/d/13A59jDQDvXFFvrpe9uvTdlusw3OKGM44"
+            }
+          },
+          "datePublished": cerita.created_at,
+          "dateModified": cerita.created_at
+        }}
+      />
       <div className="max-w-[85rem] mx-auto px-[0.75rem] sm:px-[1.5rem] lg:px-[4rem] pt-[1rem] pb-[3rem] md:pt-[3rem] md:pb-[5rem] lg:pt-[4rem] lg:pb-[7rem]">
         {/* Header Section with Portrait Image */}
         <div className="grid grid-cols-1 md:grid-cols-[1fr_1.8fr] gap-[1.5rem] sm:gap-[2rem] md:gap-[4rem] mb-[2.5rem] md:mb-[5rem] items-start">
